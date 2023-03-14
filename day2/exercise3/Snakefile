@@ -1,0 +1,25 @@
+# Define the input and output files for the workflow
+samples = config.get("samples")
+index = config.get("bowtie2_index"),
+
+# Define the workflow
+rule all:
+    input:
+        expand("results/{sample}_mapped_reads.bam", sample=samples)
+
+# Define the rule for mapping reads with Bowtie2 and sorting with Samtools
+rule bowtie2:
+    input:
+        index=index,
+        reads="data/{sample}.fastq"
+    output:
+        "results/{sample}_mapped_reads.bam"
+    params:
+        samtools_extra=config.get("samtools_extra", ""),
+    threads: config.get("threads", 1)
+    shell:
+        """
+        bowtie2 --threads {params.threads} -x {input.index} -U {input.reads} \
+            | samtools view -bS -F 4 -@ {threads} {params.samtools_extra} \
+            | samtools sort {params.samtools_extra} -@ {params.threads} -o {output} -
+        """
