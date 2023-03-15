@@ -21,7 +21,7 @@ The tasks for each day are located in their respective directories, `Day1` and `
 
 ### Wiki
 
-The wiki contains detailed explanations of the concepts and techniques covered in the course, as well as examples and code snippets to help you understand and apply them. The wiki is organized into several sections, each corresponding to a topic covered in the course.
+The [wiki](https://github.com/genomewalker/FunDatA/wiki) contains detailed explanations of the concepts and techniques covered in the course, as well as examples and code snippets to help you understand and apply them. The wiki is organized into several sections, each corresponding to a topic covered in the course.
 
 ### Getting Started
 
