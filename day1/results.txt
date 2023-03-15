@@ -1,1 +1,0 @@
-File: data/test-file-1.txt;Word count: 23;Character count: 106
