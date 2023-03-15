@@ -5,7 +5,7 @@ trap 'echo "Interrupted" >&2 ; exit 1' INT
 
 # Define usage message
 usage() {
-    echo "Usage: $(basename "$0") -i <index> -r <reads> [-t <threads>]"
+    echo "Usage: $(basename "$0") -i <index> -1 <reads1> -2 <reads2> [-t <threads>]"
 }
 
 # Parse command-line arguments
@@ -36,12 +36,16 @@ fi
 # Set default values
 threads="${threads:-2}"
 
-# Construct output file path
-sam_file="$(basename "${reads%.*}")_mapped.sam"
+# Construct output file paths
+bam_mapped_file="$(basename "${reads%.*}").mapped.bam"
+bam_file="$(basename "${bam_mapped_file}" .mapped.bam).mapped.sorted.bam"
 
 # Run Bowtie2 to map the reads
-bowtie2 --quiet --threads "${threads}" -x "${index}" -U "${reads}" -S "${sam_file}"
-# Sort the resulting SAM file with Samtools
-samtools sort -@ "${threads}" -o "$(basename "${sam_file}" .sam).bam" "${sam_file}"
+bowtie2 --threads "${threads}" -x "${index}" -U "${reads}" \
+    | samtools view -@ "${threads}" -bS -F 4 > "${bam_mapped_file}"
+
+# Sort the resulting BAM file with Samtools
+samtools sort -@ "${threads}" -o "${bam_file}" "${bam_mapped_file}"
+
 # Clean up intermediate files
-rm "${sam_file}"
+rm  -rf "${bam_mapped_file}"
