@@ -37,8 +37,9 @@ fi
 threads="${threads:-2}"
 
 # Construct output file paths
-bam_mapped_file="$(basename "${reads%.*}").mapped.bam"
-bam_file="$(basename "${bam_mapped_file}" .mapped.bam).mapped.sorted.bam"
+file_name=$(basename ${reads})
+bam_mapped_file="${file_name%%[ .]*}".mapped.bam
+bam_file="${file_name%%[ .]*}".sorted.bam
 
 # Run Bowtie2 to map the reads
 bowtie2 --threads "${threads}" -x "${index}" -U "${reads}" \
