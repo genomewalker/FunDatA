@@ -3,17 +3,14 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(
-            "plots/{country}.hist.pdf",
-            country=config.get("countries")
-        )
+        expand("plots/{country}.hist.pdf", country=config.get("countries")),
 
 
 rule select_by_country:
     input:
-        "data/worldcitiespop.csv"
+        "data/worldcitiespop.csv",
     output:
-        "by-country/{country}.csv"
+        "by-country/{country}.csv",
     conda:
         "envs/xsv.yaml"
     shell:
@@ -23,9 +20,9 @@ rule select_by_country:
 
 rule plot_histogram:
     input:
-        "by-country/{country}.csv"
+        "by-country/{country}.csv",
     output:
-        "plots/{country}.hist.svg"
+        "plots/{country}.hist.svg",
     conda:
         "envs/matplotlib.yaml"
     script:
@@ -34,15 +31,15 @@ rule plot_histogram:
 
 rule convert_to_pdf:
     input:
-        "{prefix}.svg"
+        "{prefix}.svg",
     output:
-        "{prefix}.pdf"
+        "{prefix}.pdf",
     wrapper:
         "0.47.0/utils/cairosvg"
 
 
 rule download_data:
     output:
-        "data/worldcitiespop.csv"
+        "data/worldcitiespop.csv",
     shell:
         "curl -L https://burntsushi.net/stuff/worldcitiespop.csv > {output}"

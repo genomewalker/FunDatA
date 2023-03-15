@@ -1,17 +1,19 @@
 # Define the input and output files for the workflow
 samples = config.get("samples")
-index = config.get("bowtie2_index")
+index = (config.get("bowtie2_index"),)
+
 
 # Define the workflow
 rule all:
     input:
-        expand("results/mapped/{sample}.sorted.bam", sample=samples)
+        expand("results/mapped/{sample}.sorted.bam", sample=samples),
+
 
 rule bowtie2:
     input:
-        sample="data/{sample}.fq.gz"
+        sample=["data/{sample}.fq.gz"],
         idx=multiext(
-            index,
+            index[0],
             ".1.bt2",
             ".2.bt2",
             ".3.bt2",
@@ -22,7 +24,7 @@ rule bowtie2:
     output:
         "results/mapped/{sample}.bam",
     log:
-        "logs/bowtie2/{sample}.log",
+        "logs/map/{sample}.log",
     params:
         extra=config.get("samtools_view_extra", ""),  # optional parameters
     threads: config.get("threads", 1)
@@ -33,11 +35,11 @@ rule bowtie2:
 # Define the rule for mapping reads with Bowtie2 and sorting with Samtools
 rule samtools_sort:
     input:
-        "mapped/{sample}.bam",
+        "results/mapped/{sample}.bam",
     output:
         "results/mapped/{sample}.sorted.bam",
     log:
-        "{sample}.log",
+        "logs/sort/{sample}.log",
     params:
         extra=config.get("samtools_sort_extra", ""),
     threads: config.get("threads", 1)
