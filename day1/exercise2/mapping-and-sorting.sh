@@ -5,7 +5,7 @@ trap 'echo "Interrupted" >&2 ; exit 1' INT
 
 # Define usage message
 usage() {
-    echo "Usage: $(basename "$0") -i <index> -1 <reads1> -2 <reads2> [-t <threads>]"
+    echo "Usage: $(basename "$0") -i <index> -r <reads> [-t <threads>]"
 }
 
 # Parse command-line arguments
